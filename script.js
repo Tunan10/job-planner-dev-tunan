@@ -1,12 +1,10 @@
-// take blank array to store value
 let interviewList = [];
-let rejecteList = [];
+let rejectedList = [];
 
-// Header count change
 let totalCount = document.getElementById('total-count');
 let interviewCount = document.getElementById('interview-count');
 let rejectCount = document.getElementById('rejected-count');
-let totoalJobCount = document.getElementById('total-job-count');
+let totalJobCount = document.getElementById('total-job-count');
 
 const mainContainer = document.querySelector('main');
 const allCardSection = document.getElementById('All-job-card');
@@ -15,12 +13,12 @@ const filterSection = document.getElementById('filtered-section');
 function calculateCount() {
   totalCount.innerText = allCardSection.children.length;
   interviewCount.innerText = interviewList.length;
-  rejectCount.innerText = rejecteList.length;
-  totoalJobCount.innerText = allCardSection.children.length + 'jobs';
+  rejectCount.innerText = rejectedList.length;
+  totalJobCount.innerText = allCardSection.children.length + ' jobs';
 }
+
 calculateCount();
 
-// for Button behaviour
 const allFilterBtn = document.getElementById('all-filter-btn');
 const interviewFilterBtn = document.getElementById('interview-filter-btn');
 const rejectedFilterBtn = document.getElementById('rejected-filter-btn');
@@ -35,46 +33,28 @@ mainContainer.addEventListener('click', function (event) {
   const jobBio = parentNode.querySelector('.jobBio').innerText;
 
   if (event.target.classList.contains('interviewBtn')) {
-    // remove from rejected if exists
-    rejecteList = rejecteList.filter(item => item.JobName !== JobName);
+    interviewList.push({
+      JobName,
+      jobInfo,
+      jobDetails,
+      jobBio,
+      JobStatus: 'Interview',
+    });
 
-    const exists = interviewList.find(item => item.JobName === JobName);
-
-    if (!exists) {
-      interviewList.push({
-        JobName,
-        jobInfo,
-        jobDetails,
-        jobBio,
-        JobStatus: 'Interview',
-      });
-    }
-
-    parentNode.querySelector('.JobStatus').innerText = 'Interview';
-    parentNode.querySelector('.JobStatus').className =
-      'JobStatus bg-green-100 text-green-600 w-28 h-10 p-2 rounded-[4px] font-semibold';
+    parentNode.remove();
 
     renderInterview();
     calculateCount();
   } else if (event.target.classList.contains('rejectedBtn')) {
-    // remove from interview if exists
-    interviewList = interviewList.filter(item => item.JobName !== JobName);
+    rejectedList.push({
+      JobName,
+      jobInfo,
+      jobDetails,
+      jobBio,
+      JobStatus: 'Rejected',
+    });
 
-    const exists = rejecteList.find(item => item.JobName === JobName);
-
-    if (!exists) {
-      rejecteList.push({
-        JobName,
-        jobInfo,
-        jobDetails,
-        jobBio,
-        JobStatus: 'Rejected',
-      });
-    }
-
-    parentNode.querySelector('.JobStatus').innerText = 'Rejected';
-    parentNode.querySelector('.JobStatus').className =
-      'JobStatus bg-red-100 text-red-600 w-28 h-10 p-2 rounded-[4px] font-semibold';
+    parentNode.remove();
 
     renderRejected();
     calculateCount();
@@ -108,6 +88,7 @@ function toggleStyle(id) {
     filterSection.classList.add('hidden');
   }
 }
+
 function deleteInterview(index) {
   interviewList.splice(index, 1);
   renderInterview();
@@ -115,13 +96,7 @@ function deleteInterview(index) {
 }
 
 function deleteRejected(index) {
-  rejecteList.splice(index, 1);
-  renderRejected();
-  calculateCount();
-}
-
-function deleteRejected(index) {
-  rejecteList.splice(index, 1);
+  rejectedList.splice(index, 1);
   renderRejected();
   calculateCount();
 }
@@ -142,25 +117,25 @@ function renderInterview() {
 
   interviewList.forEach((item, index) => {
     const div = document.createElement('div');
-    div.className = 'card mb-[16px] mt-8';
+    div.className = 'card mb-4 mt-8';
 
     div.innerHTML = `
       <div class="shadow-sm p-6">
-        <div class="grid grid-cols-2 place-content-between">
-          <p class="JobName font-bold">${item.JobName}</p>
+        <div class="grid grid-cols-2">
+          <p class="font-bold">${item.JobName}</p>
           <button onclick="deleteInterview(${index})">
-            <i class="fa-regular fa-trash-can text-red-500"></i>
+            🗑
           </button>
         </div>
 
-        <p class="jobInfo text-gray-400">${item.jobInfo}</p>
-        <p class="jobDetails text-gray-400 mt-5">${item.jobDetails}</p>
+        <p class="text-gray-400">${item.jobInfo}</p>
+        <p class="text-gray-400 mt-5">${item.jobDetails}</p>
 
         <div class="mt-5">
           <p class="bg-green-100 text-green-600 w-28 h-10 p-2 rounded font-semibold">
             Interview
           </p>
-          <p class="jobBio mt-2 text-gray-400">${item.jobBio}</p>
+          <p class="mt-2 text-gray-400">${item.jobBio}</p>
         </div>
       </div>
     `;
@@ -172,8 +147,9 @@ function renderInterview() {
 function renderRejected() {
   filterSection.innerHTML = '';
 
-  if (rejecteList.length === 0) {
-    filterSection.innerHTML = `<div class="h-[400px]  ">
+  if (rejectedList.length === 0) {
+    filterSection.innerHTML = `
+      <div class="h-[400px]  ">
       <div class="flex flex-col items-center justify-center pt-20"><img src="./jobs.png" alt="" class="w-32 ">
         <h2>No jobs available</h2>
         <p>Check back soon for new job opportunities</p>
@@ -182,27 +158,27 @@ function renderRejected() {
     return;
   }
 
-  rejecteList.forEach((item, index) => {
+  rejectedList.forEach((item, index) => {
     const div = document.createElement('div');
-    div.className = 'card mb-[16px] mt-8';
+    div.className = 'card mb-4 mt-8';
 
     div.innerHTML = `
       <div class="shadow-sm p-6">
-        <div class="grid grid-cols-2 place-content-between">
-          <p class="JobName font-bold">${item.JobName}</p>
+        <div class="grid grid-cols-2">
+          <p class="font-bold">${item.JobName}</p>
           <button onclick="deleteRejected(${index})">
-            <i class="fa-regular fa-trash-can text-red-500"></i>
+            🗑
           </button>
         </div>
 
-        <p class="jobInfo text-gray-400">${item.jobInfo}</p>
-        <p class="jobDetails text-gray-400 mt-5">${item.jobDetails}</p>
+        <p class="text-gray-400">${item.jobInfo}</p>
+        <p class="text-gray-400 mt-5">${item.jobDetails}</p>
 
         <div class="mt-5">
           <p class="bg-red-100 text-red-600 w-28 h-10 p-2 rounded font-semibold">
             Rejected
           </p>
-          <p class="jobBio mt-2 text-gray-400">${item.jobBio}</p>
+          <p class="mt-2 text-gray-400">${item.jobBio}</p>
         </div>
       </div>
     `;
