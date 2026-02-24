@@ -124,7 +124,7 @@ function renderInterview() {
         <div class="grid grid-cols-2">
           <p class="font-bold">${item.JobName}</p>
           <button onclick="deleteInterview(${index})">
-            🗑
+            <i class="fa-regular fa-trash-can"></i>
           </button>
         </div>
 
@@ -167,7 +167,7 @@ function renderRejected() {
         <div class="grid grid-cols-2">
           <p class="font-bold">${item.JobName}</p>
           <button onclick="deleteRejected(${index})">
-            🗑
+            <i class="fa-regular fa-trash-can"></i>
           </button>
         </div>
 
